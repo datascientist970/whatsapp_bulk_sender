@@ -18,8 +18,7 @@ pip install -r requirements.txt
 echo Creating .env file...
 if not exist .env (
     echo GROQ_API_KEY=your_groq_api_key_here > .env
-    echo DEBUG=True >> .env
-    echo SECRET_KEY=your-secret-key-here >> .env
+    echo WHATSAPP_USER_DATA_DIR=./whatsapp_profile >> .env
 )
 
 echo Creating directories...

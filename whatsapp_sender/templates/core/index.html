@@ -1,631 +1,306 @@
-<!-- core/templates/core/index.html - Professional Enterprise Edition -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Business Suite | Enterprise Messaging Platform</title>
+    <title>WhatsApp Bulk Sender Pro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ============================================
-           PROFESSIONAL ENTERPRISE STYLES
-           v2.0 | Senior Web Developer Edition
-        ============================================ */
-        
-        :root {
-            --primary-dark: #0f172a;
-            --primary: #1e3a8a;
-            --primary-light: #3b82f6;
-            --secondary: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --info: #0ea5e9;
-            --dark: #1e293b;
-            --gray: #64748b;
-            --light: #f8fafc;
-            --white: #ffffff;
-            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-2: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--gradient-1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
+            padding: 20px;
         }
-        
-        /* Animated Background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.3) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        body::after {
-            content: '';
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.3) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .container {
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Typography */
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-        
-        /* Glass Card */
         .glass-card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            box-shadow: var(--shadow-xl);
-            padding: 28px;
-            margin-bottom: 24px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 20px;
         }
-        
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--gradient-2);
-        }
-        
-        .glass-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-        
-        /* Premium Button Styles */
         .btn-gradient {
-            background: var(--gradient-2);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px 28px;
-            border-radius: 12px;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-gradient:hover { 
+            transform: translateY(-2px); 
+            color: white; 
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-gradient:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 50px;
             font-weight: 600;
             font-size: 14px;
-            letter-spacing: 0.3px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-gradient::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-        
-        .btn-gradient:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-        
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.4);
-            color: white;
-        }
-        
-        .btn-outline-premium {
-            background: transparent;
-            border: 2px solid var(--primary-light);
-            color: var(--primary);
-            padding: 10px 24px;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-outline-premium:hover {
-            background: var(--primary-light);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        /* Status Badges */
-        .status-badge {
-            padding: 8px 20px;
-            border-radius: 100px;
-            font-weight: 600;
-            font-size: 13px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            letter-spacing: 0.3px;
-        }
-        
-        .status-connected {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-        }
-        
-        .status-disconnected {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-        }
-        
-        /* Result Cards */
-        .result-item {
-            padding: 16px;
-            border-radius: 16px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .result-item:hover {
-            transform: translateX(8px);
-        }
-        
-        .result-success {
-            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-            border-left: 4px solid #10b981;
-        }
-        
-        .result-failed {
-            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-            border-left: 4px solid #ef4444;
-        }
-        
-        .result-partial {
-            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-            border-left: 4px solid #f59e0b;
-        }
-        
-        /* Debug Panel */
-        .debug-panel {
-            background: #0f172a;
-            color: #e2e8f0;
-            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
-            font-size: 11px;
-            padding: 20px;
-            border-radius: 16px;
-            max-height: 400px;
-            overflow-y: auto;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .debug-line {
-            margin: 6px 0;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 11px;
-            transition: all 0.2s ease;
-        }
-        
-        .debug-line:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .debug-time {
-            color: #64748b;
-            margin-right: 12px;
-            font-weight: 500;
-        }
-        
-        .debug-info {
-            color: #34d399;
-        }
-        
-        .debug-error {
-            color: #f87171;
-            background: rgba(239, 68, 68, 0.1);
-        }
-        
-        .debug-warning {
-            color: #fbbf24;
-        }
-        
-        /* Form Elements */
-        .form-control, .form-select {
-            border-radius: 12px !important;
-            border: 2px solid #e2e8f0 !important;
-            padding: 12px 16px !important;
-            font-size: 14px !important;
-            transition: all 0.3s ease !important;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-light) !important;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
-            outline: none !important;
-        }
-        
-        /* QR Container */
-        .qr-container {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .qr-code {
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
             display: inline-block;
-            box-shadow: var(--shadow-lg);
-        }
-        
-        /* Loading Spinner */
-        .loading-spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid rgba(59, 130, 246, 0.1);
-            border-top-color: var(--primary-light);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 20px auto;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Number Badges */
-        .number-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4px 10px;
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 700;
-            margin-left: 6px;
-        }
-        
-        .badge-success {
-            background: #10b981;
-            color: white;
-            box-shadow: 0 1px 2px rgba(16, 185, 129, 0.3);
-        }
-        
-        .badge-failed {
-            background: #ef4444;
-            color: white;
-            box-shadow: 0 1px 2px rgba(239, 68, 68, 0.3);
-        }
-        
-        /* Stats Cards */
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            padding: 20px;
-            color: white;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-xl);
-        }
-        
-        /* Header Animation */
-        .header-badge {
-            animation: fadeInDown 0.6s ease;
-        }
-        
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: rgba(59, 130, 246, 0.5);
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(59, 130, 246, 0.7);
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .glass-card {
-                padding: 20px;
-            }
-            
-            .btn-gradient {
-                padding: 10px 20px;
-                font-size: 13px;
-            }
-        }
-        
-        /* Pulse Animation for QR */
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 0 20px rgba(59, 130, 246, 0);
-            }
-        }
-        
-        .qr-pulse {
             animation: pulse 2s infinite;
         }
-        
-        /* Premium Icon Styles */
-        .premium-icon {
-            width: 48px;
-            height: 48px;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .status-connected { 
+            background: #d1fae5; 
+            color: #10b981; 
+            border: 2px solid #10b981;
+            animation: none;
+        }
+        .status-disconnected { 
+            background: #fee2e2; 
+            color: #ef4444; 
+            border: 2px solid #ef4444; 
+        }
+        .status-loading { 
+            background: #fef3c7; 
+            color: #f59e0b; 
+            border: 2px solid #f59e0b; 
+        }
+        .result-success { 
+            background: #d1fae5; 
+            border-left: 4px solid #10b981; 
+            padding: 12px; 
+            border-radius: 10px; 
+            margin-bottom: 10px;
+            animation: slideIn 0.3s;
+        }
+        .result-failed { 
+            background: #fee2e2; 
+            border-left: 4px solid #ef4444; 
+            padding: 12px; 
+            border-radius: 10px; 
+            margin-bottom: 10px;
+            animation: slideIn 0.3s;
+        }
+        .result-partial {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            animation: slideIn 0.3s;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .qr-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 15px;
+            border: 2px dashed #667eea;
+        }
+        .qr-code {
+            max-width: 250px;
+            margin: 0 auto;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+        textarea, input, select { 
+            border-radius: 10px !important; 
+            border: 2px solid #e5e7eb !important; 
+            transition: all 0.3s;
+        }
+        textarea:focus, input:focus, select:focus { 
+            border-color: #667eea !important; 
+            outline: none; 
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .progress-bar-custom {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        .summary-box {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 16px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-        }
-        
-        .premium-icon i {
-            font-size: 24px;
             color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 15px;
         }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        #debugPanel {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Consolas', monospace;
+            font-size: 11px;
+        }
+        .debug-success { color: #4ec9b0; }
+        .debug-error { color: #f48771; }
+        .debug-warning { color: #dcdcaa; }
+        .debug-info { color: #569cd6; }
     </style>
 </head>
 <body>
-    <div class="container py-4">
-        <!-- Premium Header -->
-        <div class="text-center mb-5 header-badge">
-            <div class="premium-icon mx-auto">
-                <i class="bi bi-whatsapp"></i>
-            </div>
-            <h1 style="color: white; font-weight: 800; font-size: 2.5rem; margin-bottom: 8px;">
-                WhatsApp Business Suite
-            </h1>
-            <p style="color: rgba(255,255,255,0.9); font-size: 1rem;">
-                Enterprise-Grade Bulk Messaging Platform with AI Intelligence
-            </p>
+    <div class="container">
+        <div class="text-center mb-4">
+            <h1 style="color: white;"><i class="bi bi-whatsapp"></i> WhatsApp Bulk Sender Pro</h1>
+            <p style="color: rgba(255,255,255,0.9);">AI-Powered Bulk Messaging Platform</p>
         </div>
         
-        <div class="row g-4">
-            <!-- Main Content Area -->
+        <div class="row">
             <div class="col-lg-8">
-                <!-- WhatsApp Status Card -->
+                <!-- Status Card -->
                 <div class="glass-card">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h4 class="mb-2" style="color: var(--dark);">
-                                <i class="bi bi-shield-check" style="color: var(--primary-light);"></i>
-                                Connection Status
-                            </h4>
-                            <span id="statusText" class="status-badge status-disconnected">
-                                <i class="bi bi-x-circle"></i> Disconnected
+                            <strong>WhatsApp Status:</strong>
+                            <span id="statusText" class="status-badge status-loading ms-2">
+                                <i class="bi bi-hourglass-split"></i> Checking...
                             </span>
                         </div>
-                        <button class="btn-outline-premium" onclick="checkConnection()">
-                            <i class="bi bi-arrow-repeat"></i> Refresh Status
+                        <button class="btn btn-sm btn-outline-primary" onclick="checkStatus()">
+                            <i class="bi bi-arrow-repeat"></i> Refresh
                         </button>
                     </div>
                     
                     <!-- QR Code Container -->
-                    <div id="qrContainer" style="display: none;" class="qr-container mt-4">
-                        <i class="bi bi-qr-code" style="font-size: 48px; color: var(--primary-light);"></i>
-                        <h5 class="mt-3 mb-2">Scan QR Code</h5>
-                        <p class="text-muted small">Open WhatsApp → Settings → Linked Devices → Link a Device</p>
-                        <div id="qrImage" class="qr-code qr-pulse"></div>
-                        <button class="btn btn-sm btn-outline-secondary mt-3" onclick="reconnectWhatsApp()">
-                            <i class="bi bi-arrow-repeat"></i> Regenerate QR
+                    <div id="qrContainer" style="display: none;" class="qr-container">
+                        <i class="bi bi-qr-code" style="font-size: 48px; color: #667eea;"></i>
+                        <h5 class="mt-3">Scan QR Code</h5>
+                        <p class="text-muted small mb-3">Open WhatsApp → Settings → Linked Devices → Link a Device</p>
+                        <div id="qrImage" class="qr-code"></div>
+                        <button class="btn btn-sm btn-warning mt-3" onclick="forceReconnect()">
+                            <i class="bi bi-arrow-repeat"></i> Refresh QR
                         </button>
                     </div>
                     
-                    <!-- Connected Message -->
-                    <div id="connectedMessage" style="display: none;" class="alert alert-success mt-4">
-                        <i class="bi bi-check-circle-fill me-2"></i>
-                        <strong>Connected Successfully</strong><br>
-                        <small>Your WhatsApp session is active and ready to send messages</small>
+                    <div id="connectedMsg" style="display: none;" class="alert alert-success mt-3 mb-0">
+                        <i class="bi bi-check-circle-fill"></i> <strong>Connected!</strong> You can now send messages.
                     </div>
                 </div>
                 
-                <!-- AI Message Generator Card -->
+                <!-- AI Message Generator -->
                 <div class="glass-card">
-                    <h4 class="mb-4" style="color: var(--dark);">
-                        <i class="bi bi-stars" style="color: var(--primary-light);"></i>
-                        AI Message Generator
-                    </h4>
-                    
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Campaign Context</label>
-                        <textarea id="aiPrompt" rows="3" class="form-control" 
-                                  placeholder="Describe your campaign... (e.g., 'Promote our Black Friday sale with 40% discount')"></textarea>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Communication Tone</label>
-                        <select id="aiTone" class="form-select">
-                            <option value="professional">💼 Executive / Professional</option>
-                            <option value="casual">😊 Casual & Conversational</option>
-                            <option value="friendly">🤝 Warm & Friendly</option>
-                            <option value="urgent">⚠️ Urgent & Time-Sensitive</option>
-                            <option value="promotional">🎯 Promotional & Sales</option>
-                            <option value="humorous">😄 Humorous & Witty</option>
-                        </select>
-                    </div>
-                    
-                    <button class="btn-gradient w-100 mb-3" onclick="generateAIMessage()">
-                        <i class="bi bi-magic"></i> Generate AI Message
+                    <h5><i class="bi bi-stars"></i> AI Message Generator</h5>
+                    <textarea id="aiPrompt" rows="2" class="form-control mt-2" placeholder="What's your message about? (e.g., 'Promote new product sale')"></textarea>
+                    <select id="aiTone" class="form-select mt-2">
+                        <option value="friendly">😊 Friendly</option>
+                        <option value="professional">💼 Professional</option>
+                        <option value="casual">🎉 Casual</option>
+                        <option value="urgent">⚡ Urgent</option>
+                        <option value="promotional">🎁 Promotional</option>
+                    </select>
+                    <button class="btn-gradient w-100 mt-2" onclick="generateMessage()">
+                        <i class="bi bi-magic"></i> Generate Message
                     </button>
-                    
-                    <div id="aiResult" style="display: none;">
-                        <div class="mb-2">
-                            <label class="form-label fw-semibold">Generated Content</label>
-                            <textarea id="generatedMessage" rows="5" class="form-control mb-2" readonly></textarea>
-                        </div>
-                        <button class="btn btn-outline-premium w-100" onclick="useGeneratedMessage()">
-                            <i class="bi bi-check-lg"></i> Apply to Campaign
+                    <div id="aiResult" style="display: none;" class="mt-3">
+                        <textarea id="generatedMsg" rows="3" class="form-control" readonly></textarea>
+                        <button class="btn btn-sm btn-outline-success w-100 mt-2" onclick="useGenerated()">
+                            <i class="bi bi-check2"></i> Use This Message
                         </button>
                     </div>
                 </div>
                 
-                <!-- Message Content Card -->
+                <!-- Message Content -->
                 <div class="glass-card">
-                    <h5 class="mb-3" style="color: var(--dark);">
-                        <i class="bi bi-chat-dots"></i> Message Content
-                    </h5>
-                    <textarea id="messageContent" rows="5" class="form-control mb-2" 
-                              placeholder="Compose your message here..."></textarea>
-                    <div class="text-muted small d-flex justify-content-between">
-                        <span><i class="bi bi-info-circle"></i> Supports emojis & line breaks</span>
-                        <span><i class="bi bi-text-paragraph"></i> <span id="charCount">0</span> characters</span>
+                    <h5><i class="bi bi-chat-dots"></i> Your Message</h5>
+                    <textarea id="messageContent" rows="4" class="form-control mt-2" placeholder="Type your message here..."></textarea>
+                    <div class="d-flex justify-content-between mt-2">
+                        <small class="text-muted"><span id="charCount">0</span> characters</small>
+                        <button class="btn btn-sm btn-outline-danger" onclick="clearMessage()">
+                            <i class="bi bi-trash"></i> Clear
+                        </button>
                     </div>
                 </div>
                 
-                <!-- Send Settings Card -->
+                <!-- Send Settings -->
                 <div class="glass-card">
-                    <h5 class="mb-3" style="color: var(--dark);">
-                        <i class="bi bi-sliders2"></i> Delivery Configuration
-                    </h5>
-                    
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">
-                            Messages Per Recipient
-                        </label>
-                        <div class="input-group" style="max-width: 200px;">
-                            <button class="btn btn-outline-secondary" type="button" onclick="decrementMessageCount()">
-                                <i class="bi bi-dash"></i>
-                            </button>
-                            <input type="number" id="messagesPerNumber" class="form-control text-center" value="1" min="1" max="50" step="1">
-                            <button class="btn btn-outline-secondary" type="button" onclick="incrementMessageCount()">
-                                <i class="bi bi-plus"></i>
-                            </button>
-                        </div>
-                        <div class="text-muted small mt-2">
-                            <i class="bi bi-bar-chart"></i>
-                            <span id="totalMessagesInfo">Total messages to send: 0</span>
-                        </div>
+                    <h5><i class="bi bi-send-plus"></i> Send Settings</h5>
+                    <label class="form-label mt-2">Messages per Number:</label>
+                    <div class="input-group" style="max-width: 250px;">
+                        <button class="btn btn-outline-secondary" onclick="decrementMsg()">
+                            <i class="bi bi-dash"></i>
+                        </button>
+                        <input type="number" id="messagesPerNumber" class="form-control text-center" value="1" min="1" max="50">
+                        <button class="btn btn-outline-secondary" onclick="incrementMsg()">
+                            <i class="bi bi-plus"></i>
+                        </button>
                     </div>
+                    <small class="text-muted">Send the same message multiple times to each number</small>
                 </div>
                 
-                <!-- Phone Numbers Card -->
+                <!-- Phone Numbers -->
                 <div class="glass-card">
-                    <h5 class="mb-3" style="color: var(--dark);">
-                        <i class="bi bi-telephone-fill"></i> Recipient List
-                        <span class="badge bg-secondary ms-2" id="numberCount">0</span>
+                    <h5>
+                        <i class="bi bi-telephone"></i> Phone Numbers 
+                        <span id="numberCount" class="badge bg-primary">0</span>
                     </h5>
+                    <textarea id="phoneNumbers" rows="5" class="form-control mt-2" placeholder="+923001234567&#10;+923331234567&#10;+923451234567"></textarea>
+                    <small class="text-muted">Enter numbers with country code (e.g., +92)</small>
                     
-                    <textarea id="phoneNumbers" rows="4" class="form-control mb-3" 
-                              placeholder="Enter phone numbers with country code&#10;Example:&#10;+1234567890&#10;+9876543210"></textarea>
-                    
-                    <div class="row g-3">
-                        <div class="col-md-5">
-                            <button class="btn-outline-premium w-100" onclick="checkNumbers()">
-                                <i class="bi bi-check-circle"></i> Validate Numbers
+                    <div class="row mt-3">
+                        <div class="col-4">
+                            <button class="btn btn-outline-info w-100" onclick="checkNumbers()">
+                                <i class="bi bi-check-circle"></i> Check
                             </button>
                         </div>
-                        <div class="col-md-7">
-                            <button class="btn-gradient w-100" onclick="sendMessages()">
-                                <i class="bi bi-send-fill"></i> Execute Campaign
+                        <div class="col-8">
+                            <button id="sendBtn" class="btn-gradient w-100" onclick="sendMessages()">
+                                <i class="bi bi-send-fill"></i> Send Messages
                             </button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Results Card -->
+                <!-- Results -->
                 <div class="glass-card">
-                    <h5 class="mb-3" style="color: var(--dark);">
-                        <i class="bi bi-bar-chart-steps"></i> Campaign Analytics
-                    </h5>
-                    <div id="resultsArea">
-                        <div class="text-center text-muted py-4">
-                            <i class="bi bi-inbox" style="font-size: 48px;"></i>
-                            <p class="mt-2">No campaign data yet</p>
-                        </div>
-                    </div>
+                    <h5><i class="bi bi-bar-chart"></i> Results</h5>
+                    <div id="resultsArea" class="text-muted">No results yet. Send messages to see results here.</div>
                 </div>
             </div>
             
-            <!-- Debug & Monitoring Panel -->
+            <!-- Debug Panel -->
             <div class="col-lg-4">
-                <div class="glass-card" style="position: sticky; top: 20px;">
-                    <h5 class="mb-3" style="color: var(--dark);">
-                        <i class="bi bi-terminal"></i> System Console
-                        <button class="btn btn-sm btn-outline-secondary float-end" onclick="clearDebug()">
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0"><i class="bi bi-bug"></i> Console</h5>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="clearDebug()">
                             <i class="bi bi-trash"></i> Clear
                         </button>
-                    </h5>
-                    <div id="debugPanel" class="debug-panel">
-                        <div class="debug-line">
-                            <span class="debug-time">[INIT]</span>
-                            <span class="debug-info">System monitoring active</span>
-                        </div>
-                        <div class="debug-line">
-                            <span class="debug-time">[READY]</span>
-                            <span class="debug-info">WhatsApp handler initialized</span>
-                        </div>
                     </div>
-                    <div class="mt-3">
-                        <button class="btn btn-sm btn-dark w-100" onclick="refreshDebug()">
-                            <i class="bi bi-arrow-clockwise"></i> Refresh Console
-                        </button>
+                    <div id="debugPanel" class="p-3 rounded" style="height: 450px; overflow-y: auto;">
+                        <div class="debug-info">[System] Ready...</div>
                     </div>
                 </div>
             </div>
@@ -633,161 +308,81 @@
     </div>
     
     <script>
-        // ============================================
-        // PROFESSIONAL APPLICATION LOGIC
-        // ============================================
+        let checkInterval = null;
         
-        let refreshInterval = null;
-        let debugRefreshInterval = null;
-        
-        // Initialize on page load
+        // Initialize on load
         window.onload = function() {
-            console.log('%c🚀 WhatsApp Business Suite v2.0', 'color: #3b82f6; font-size: 16px; font-weight: bold;');
-            console.log('%cSystem initialized successfully', 'color: #10b981;');
+            checkStatus();
+            checkInterval = setInterval(checkStatus, 5000);
             
-            checkConnection();
-            refreshDebug();
-            updateTotalMessages();
+            // Character counter
+            document.getElementById('messageContent').addEventListener('input', function() {
+                document.getElementById('charCount').innerText = this.value.length;
+            });
             
-            refreshInterval = setInterval(checkConnection, 5000);
-            debugRefreshInterval = setInterval(refreshDebug, 3000);
-            
-            document.getElementById('phoneNumbers').addEventListener('input', updateTotalMessages);
-            document.getElementById('messagesPerNumber').addEventListener('input', updateTotalMessages);
+            // Number counter
+            document.getElementById('phoneNumbers').addEventListener('input', function() {
+                let nums = this.value.split(/[\n,\s]+/).filter(n => n.trim());
+                document.getElementById('numberCount').innerText = nums.length;
+            });
         };
         
-        function updateTotalMessages() {
-            const numbersText = document.getElementById('phoneNumbers').value;
-            const messagesPerNum = parseInt(document.getElementById('messagesPerNumber').value) || 1;
-            const numbers = numbersText.split(/[\n,\s]+/).filter(n => n.trim());
-            const totalMessages = numbers.length * messagesPerNum;
-            
-            document.getElementById('totalMessagesInfo').innerHTML = 
-                `<strong>${totalMessages}</strong> total messages (${numbers.length} recipients × ${messagesPerNum} messages each)`;
-        }
-        
-        function incrementMessageCount() {
-            const input = document.getElementById('messagesPerNumber');
-            let value = parseInt(input.value) || 1;
-            if (value < 50) {
-                input.value = value + 1;
-                updateTotalMessages();
-            }
-        }
-        
-        function decrementMessageCount() {
-            const input = document.getElementById('messagesPerNumber');
-            let value = parseInt(input.value) || 1;
-            if (value > 1) {
-                input.value = value - 1;
-                updateTotalMessages();
-            }
-        }
-        
-        async function checkConnection() {
+        async function checkStatus() {
             try {
                 const response = await fetch('/api/check-connection/');
                 const data = await response.json();
                 
                 const statusSpan = document.getElementById('statusText');
                 const qrContainer = document.getElementById('qrContainer');
-                const connectedMsg = document.getElementById('connectedMessage');
+                const connectedMsg = document.getElementById('connectedMsg');
                 
                 if (data.connected) {
-                    statusSpan.innerHTML = '<i class="bi bi-check-circle"></i> Connected ● Active';
+                    statusSpan.innerHTML = '<i class="bi bi-check-circle-fill"></i> Connected';
                     statusSpan.className = 'status-badge status-connected';
                     qrContainer.style.display = 'none';
                     connectedMsg.style.display = 'block';
-                    
-                    if (refreshInterval) {
-                        clearInterval(refreshInterval);
-                        refreshInterval = null;
-                    }
-                    addDebugLine('WhatsApp connection established', 'info');
+                    document.getElementById('sendBtn').disabled = false;
                 } else {
-                    statusSpan.innerHTML = '<i class="bi bi-x-circle"></i> Disconnected ● Inactive';
+                    statusSpan.innerHTML = '<i class="bi bi-x-circle-fill"></i> Disconnected';
                     statusSpan.className = 'status-badge status-disconnected';
                     connectedMsg.style.display = 'none';
+                    document.getElementById('sendBtn').disabled = true;
                     
                     if (data.qr_code) {
                         qrContainer.style.display = 'block';
-                        const qrImage = document.getElementById('qrImage');
-                        if (data.qr_code.startsWith('data:image')) {
-                            qrImage.innerHTML = `<img src="${data.qr_code}" style="width: 220px; height: 220px;">`;
-                        } else if (data.qr_code.startsWith('http')) {
-                            qrImage.innerHTML = `<img src="${data.qr_code}" style="width: 220px; height: 220px;">`;
-                        } else {
-                            qrImage.innerHTML = `<div class="alert alert-warning">QR data available</div>`;
-                        }
-                        addDebugLine('QR code generated - awaiting scan', 'info');
+                        document.getElementById('qrImage').innerHTML = `<img src="${data.qr_code}" style="width: 220px; border-radius: 10px;">`;
                     } else {
-                        qrContainer.style.display = 'none';
-                        addDebugLine('Waiting for QR code generation', 'warning');
+                        qrContainer.style.display = 'block';
+                        document.getElementById('qrImage').innerHTML = '<div class="loading-spinner"></div><p class="text-muted mt-2">Loading QR...</p>';
                     }
                 }
-            } catch (error) {
-                addDebugLine(`Connection error: ${error.message}`, 'error');
+            } catch(e) {
+                addDebug('Connection check failed: ' + e.message, 'error');
             }
         }
         
-        async function refreshDebug() {
+        async function forceReconnect() {
+            addDebug('Reconnecting...', 'warning');
             try {
-                const response = await fetch('/api/debug/');
-                const data = await response.json();
-                
-                if (data.logs && data.logs.length > 0) {
-                    const debugPanel = document.getElementById('debugPanel');
-                    debugPanel.innerHTML = '';
-                    
-                    data.logs.slice(-30).forEach(log => {
-                        let levelClass = 'debug-info';
-                        if (log.includes('ERROR')) levelClass = 'debug-error';
-                        else if (log.includes('WARNING')) levelClass = 'debug-warning';
-                        
-                        const div = document.createElement('div');
-                        div.className = 'debug-line';
-                        div.innerHTML = `<span class="debug-time">${log.substring(0, 15)}</span> <span class="${levelClass}">${escapeHtml(log)}</span>`;
-                        debugPanel.appendChild(div);
-                    });
-                    
-                    debugPanel.scrollTop = debugPanel.scrollHeight;
-                }
-            } catch (error) {
-                console.error('Debug refresh error:', error);
+                await fetch('/api/reconnect/', { method: 'POST' });
+                document.getElementById('statusText').innerHTML = '<i class="bi bi-hourglass-split"></i> Reconnecting...';
+                document.getElementById('statusText').className = 'status-badge status-loading';
+                setTimeout(checkStatus, 3000);
+            } catch(e) {
+                addDebug('Reconnect failed: ' + e.message, 'error');
             }
         }
         
-        async function reconnectWhatsApp() {
-            addDebugLine('Manual reconnection initiated', 'info');
-            
-            try {
-                const response = await fetch('/api/reconnect/', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'}
-                });
-                
-                const data = await response.json();
-                if (data.success) {
-                    addDebugLine('Reconnection successful - QR regenerated', 'info');
-                    setTimeout(checkConnection, 3000);
-                } else {
-                    addDebugLine(`Reconnection failed: ${data.message}`, 'error');
-                }
-            } catch (error) {
-                addDebugLine(`Reconnection error: ${error.message}`, 'error');
-            }
-        }
-        
-        async function generateAIMessage() {
+        async function generateMessage() {
             const prompt = document.getElementById('aiPrompt').value;
             const tone = document.getElementById('aiTone').value;
             
-            if (!prompt) {
-                alert('Please describe your campaign context');
+            if (!prompt.trim()) {
+                alert('⚠️ Please enter a prompt for AI generation');
                 return;
             }
             
-            addDebugLine(`Generating AI content with ${tone} tone`, 'info');
+            addDebug('Generating AI message with ' + tone + ' tone...', 'info');
             
             try {
                 const response = await fetch('/api/generate-message/', {
@@ -795,30 +390,78 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({prompt, tone})
                 });
-                
                 const data = await response.json();
                 
                 if (data.success) {
-                    document.getElementById('generatedMessage').value = data.message;
+                    document.getElementById('generatedMsg').value = data.message;
                     document.getElementById('aiResult').style.display = 'block';
-                    addDebugLine('AI content generated successfully', 'info');
+                    addDebug('AI message generated successfully', 'success');
                 } else {
-                    addDebugLine(`Generation failed: ${data.error}`, 'error');
-                    alert('Failed to generate message');
+                    addDebug('AI generation failed: ' + (data.error || 'Unknown error'), 'error');
                 }
-            } catch (error) {
-                addDebugLine(`Generation error: ${error.message}`, 'error');
-                alert('Error generating message');
+            } catch(e) {
+                addDebug('AI generation error: ' + e.message, 'error');
             }
         }
         
-        function useGeneratedMessage() {
-            const message = document.getElementById('generatedMessage').value;
-            document.getElementById('messageContent').value = message;
-            document.getElementById('charCount').innerText = message.length;
+        function useGenerated() {
+            const msg = document.getElementById('generatedMsg').value;
+            document.getElementById('messageContent').value = msg;
+            document.getElementById('charCount').innerText = msg.length;
             document.getElementById('aiResult').style.display = 'none';
-            addDebugLine('AI content applied to campaign', 'info');
-            alert('✓ AI-generated message applied to your campaign');
+            addDebug('Applied AI-generated message', 'success');
+        }
+        
+        function clearMessage() {
+            if (confirm('Clear message content?')) {
+                document.getElementById('messageContent').value = '';
+                document.getElementById('charCount').innerText = '0';
+                addDebug('Message cleared', 'info');
+            }
+        }
+        
+        function incrementMsg() {
+            let val = parseInt(document.getElementById('messagesPerNumber').value);
+            if (val < 50) {
+                document.getElementById('messagesPerNumber').value = val + 1;
+            }
+        }
+        
+        function decrementMsg() {
+            let val = parseInt(document.getElementById('messagesPerNumber').value);
+            if (val > 1) {
+                document.getElementById('messagesPerNumber').value = val - 1;
+            }
+        }
+        
+        async function checkNumbers() {
+            const numbers = document.getElementById('phoneNumbers').value;
+            if (!numbers.trim()) {
+                alert('⚠️ Please enter phone numbers');
+                return;
+            }
+            
+            addDebug('Checking numbers validity...', 'info');
+            
+            try {
+                const response = await fetch('/api/check-numbers/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({numbers})
+                });
+                const data = await response.json();
+                
+                let html = '<h6 class="mb-3">Validation Results:</h6>';
+                data.results.forEach(r => {
+                    const cls = r.has_whatsapp ? 'result-success' : 'result-failed';
+                    const icon = r.has_whatsapp ? '✅' : '❌';
+                    html += `<div class="${cls}"><strong>${icon} ${r.number}</strong><br><small>${r.status}</small></div>`;
+                });
+                document.getElementById('resultsArea').innerHTML = html;
+                addDebug(`Validated ${data.results.length} numbers`, 'success');
+            } catch(e) {
+                addDebug('Number validation error: ' + e.message, 'error');
+            }
         }
         
         async function sendMessages() {
@@ -827,205 +470,146 @@
             const messagesPerNumber = parseInt(document.getElementById('messagesPerNumber').value);
             
             if (!numbers.trim()) {
-                alert('Please add recipient numbers');
+                alert('⚠️ Please enter phone numbers');
                 return;
             }
             
             if (!message.trim()) {
-                alert('Please compose your message');
-                return;
-            }
-            
-            const numbersList = numbers.split(/[\n,\s]+/).filter(n => n.trim());
-            const totalMessages = numbersList.length * messagesPerNumber;
-            
-            if (!confirm(`📊 Campaign Summary\n\n• Recipients: ${numbersList.length}\n• Messages per recipient: ${messagesPerNumber}\n• Total messages: ${totalMessages}\n\nProceed with campaign execution?`)) {
+                alert('⚠️ Please enter a message');
                 return;
             }
             
             const resultsArea = document.getElementById('resultsArea');
-            resultsArea.innerHTML = '<div class="text-center"><div class="loading-spinner"></div><p class="mt-3">Executing campaign...</p><small class="text-muted">Please wait while messages are being sent</small></div>';
-            addDebugLine(`Campaign started: ${totalMessages} messages to ${numbersList.length} recipients`, 'info');
+            resultsArea.innerHTML = `
+                <div class="text-center">
+                    <div class="loading-spinner"></div>
+                    <p class="mt-3">Sending messages...</p>
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill" style="width: 0%" id="progressBar"></div>
+                    </div>
+                </div>
+            `;
+            
+            const numList = numbers.split(/[\n,\s]+/).filter(n => n.trim());
+            addDebug(`Starting bulk send to ${numList.length} numbers (${messagesPerNumber} msg/number)`, 'info');
             
             try {
                 const response = await fetch('/api/send-messages/', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        numbers: numbers,
-                        message: message,
-                        messages_per_number: messagesPerNumber
-                    })
+                    body: JSON.stringify({numbers, message, messages_per_number: messagesPerNumber})
                 });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Send failed');
+                }
                 
                 const data = await response.json();
                 
                 if (data.success) {
+                    // Summary box
                     let html = `
-                        <div class="alert alert-info mb-3">
-                            <h6 class="mb-2"><i class="bi bi-graph-up"></i> Campaign Performance</h6>
-                            <div class="row">
-                                <div class="col-6">
-                                    <small>Recipients Processed</small><br>
-                                    <strong>${data.summary.processed_numbers}/${data.summary.total_numbers}</strong>
-                                </div>
-                                <div class="col-6">
-                                    <small>Success Rate</small><br>
-                                    <strong>${data.summary.success_rate}</strong>
-                                </div>
-                                <div class="col-6 mt-2">
-                                    <small>Successful</small><br>
-                                    <strong class="text-success">${data.summary.successful}</strong>
-                                </div>
-                                <div class="col-6 mt-2">
-                                    <small>Failed</small><br>
-                                    <strong class="text-danger">${data.summary.failed}</strong>
-                                </div>
+                        <div class="summary-box">
+                            <h5><i class="bi bi-check-circle"></i> Sending Complete!</h5>
+                            <div class="summary-item">
+                                <span>Total Numbers:</span>
+                                <strong>${data.summary.total_numbers}</strong>
                             </div>
-                            ${data.summary.limited ? '<hr><small class="text-warning">⚠️ Limited to first 20 numbers for performance</small>' : ''}
+                            <div class="summary-item">
+                                <span>Messages per Number:</span>
+                                <strong>${data.summary.messages_per_number}</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>Total Attempts:</span>
+                                <strong>${data.summary.total_attempts}</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>✅ Successful:</span>
+                                <strong>${data.summary.successful}</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>❌ Failed:</span>
+                                <strong>${data.summary.failed}</strong>
+                            </div>
                         </div>
                     `;
                     
-                    if (data.results && data.results.length > 0) {
-                        html += '<h6 class="mb-2">Delivery Details</h6>';
-                        data.results.forEach(numberResult => {
-                            const totalForNumber = numberResult.successful + numberResult.failed;
-                            let resultClass = 'result-success';
-                            let icon = '✅';
-                            
-                            if (numberResult.successful === totalForNumber && numberResult.successful > 0) {
-                                resultClass = 'result-success';
-                                icon = '✅';
-                            } else if (numberResult.failed === totalForNumber) {
-                                resultClass = 'result-failed';
-                                icon = '❌';
-                            } else {
-                                resultClass = 'result-partial';
-                                icon = '⚠️';
-                            }
-                            
-                            html += `
-                                <div class="result-item ${resultClass}">
-                                    <strong>${icon} ${numberResult.number}</strong>
-                                    <span class="number-badge badge-success">✓ ${numberResult.successful}</span>
-                                    <span class="number-badge badge-failed">✗ ${numberResult.failed}</span>
-                                </div>
-                            `;
-                        });
-                    }
+                    // Group results by number
+                    html += '<h6 class="mt-4 mb-3">Detailed Results:</h6>';
+                    const grouped = {};
+                    data.results.forEach(r => {
+                        if (!grouped[r.number]) grouped[r.number] = [];
+                        grouped[r.number].push(r);
+                    });
+                    
+                    Object.keys(grouped).forEach(num => {
+                        const msgs = grouped[num];
+                        const successCount = msgs.filter(m => m.success).length;
+                        const totalCount = msgs.length;
+                        
+                        let cls = 'result-success';
+                        let icon = '✅';
+                        if (successCount === 0) {
+                            cls = 'result-failed';
+                            icon = '❌';
+                        } else if (successCount < totalCount) {
+                            cls = 'result-partial';
+                            icon = '⚠️';
+                        }
+                        
+                        html += `
+                            <div class="${cls}">
+                                <strong>${icon} ${num}</strong>
+                                <br>
+                                <small>Sent: ${successCount}/${totalCount} messages</small>
+                            </div>
+                        `;
+                    });
                     
                     resultsArea.innerHTML = html;
-                    addDebugLine(`Campaign completed: ${data.summary.successful}/${data.summary.total_attempts} successful`, 'info');
-                    
-                    if (data.summary.successful > 0) {
-                        setTimeout(() => {
-                            alert(`✅ Campaign Execution Complete\n\nSuccessfully delivered ${data.summary.successful} out of ${data.summary.total_attempts} messages`);
-                        }, 500);
-                    }
+                    addDebug(`Completed: ${data.summary.successful}/${data.summary.total_attempts} sent`, 'success');
                 } else {
-                    resultsArea.innerHTML = `<div class="alert alert-danger">${data.error || 'Campaign execution failed'}</div>`;
-                    addDebugLine(`Campaign failed: ${data.error}`, 'error');
+                    throw new Error('Send operation failed');
                 }
-            } catch (error) {
-                resultsArea.innerHTML = `<div class="alert alert-danger">System error: ${error.message}</div>`;
-                addDebugLine(`Campaign error: ${error.message}`, 'error');
+            } catch(e) {
+                resultsArea.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i> 
+                        <strong>Error:</strong> ${e.message}
+                    </div>
+                `;
+                addDebug('Send error: ' + e.message, 'error');
             }
         }
         
-        async function checkNumbers() {
-            const numbers = document.getElementById('phoneNumbers').value;
-            
-            if (!numbers.trim()) {
-                alert('Please add recipient numbers');
-                return;
-            }
-            
-            const resultsArea = document.getElementById('resultsArea');
-            resultsArea.innerHTML = '<div class="text-center"><div class="loading-spinner"></div><p class="mt-3">Validating numbers...</p></div>';
-            addDebugLine(`Validating ${numbers.split(/[\n,\s]+/).filter(n => n.trim()).length} numbers`, 'info');
-            
-            try {
-                const response = await fetch('/api/check-numbers/', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({numbers})
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    let html = `
-                        <div class="alert alert-info mb-3">
-                            <strong><i class="bi bi-check-circle"></i> Validation Results</strong><br>
-                            Checked: ${data.total_checked} numbers
-                        </div>
-                    `;
-                    
-                    if (data.results && data.results.length > 0) {
-                        data.results.forEach(result => {
-                            const icon = result.has_whatsapp ? '✅' : '❌';
-                            html += `
-                                <div class="result-item result-${result.has_whatsapp ? 'success' : 'failed'}">
-                                    <strong>${icon} ${result.number}</strong><br>
-                                    <small>${result.has_whatsapp ? 'WhatsApp account verified' : 'Not registered on WhatsApp'}</small>
-                                </div>
-                            `;
-                        });
-                    }
-                    
-                    resultsArea.innerHTML = html;
-                    addDebugLine(`Validation complete: ${data.results.filter(r => r.has_whatsapp).length}/${data.results.length} have WhatsApp`, 'info');
-                } else {
-                    resultsArea.innerHTML = `<div class="alert alert-danger">${data.error || 'Validation failed'}</div>`;
-                }
-            } catch (error) {
-                resultsArea.innerHTML = `<div class="alert alert-danger">Validation error: ${error.message}</div>`;
-                addDebugLine(`Validation error: ${error.message}`, 'error');
-            }
-        }
-        
-        function addDebugLine(message, level = 'info') {
-            const debugPanel = document.getElementById('debugPanel');
+        function addDebug(msg, level = 'info') {
+            const panel = document.getElementById('debugPanel');
             const time = new Date().toLocaleTimeString();
+            const classes = {
+                'success': 'debug-success',
+                'error': 'debug-error',
+                'warning': 'debug-warning',
+                'info': 'debug-info'
+            };
+            const cls = classes[level] || 'debug-info';
+            
             const div = document.createElement('div');
-            div.className = 'debug-line';
+            div.className = cls;
+            div.textContent = `[${time}] ${msg}`;
+            panel.appendChild(div);
             
-            let levelClass = 'debug-info';
-            if (level === 'error') levelClass = 'debug-error';
-            if (level === 'warning') levelClass = 'debug-warning';
+            panel.scrollTop = panel.scrollHeight;
             
-            div.innerHTML = `<span class="debug-time">[${time}]</span> <span class="${levelClass}">${escapeHtml(message)}</span>`;
-            debugPanel.appendChild(div);
-            debugPanel.scrollTop = debugPanel.scrollHeight;
-            
-            while (debugPanel.children.length > 50) {
-                debugPanel.removeChild(debugPanel.firstChild);
+            // Keep only last 100 entries
+            while (panel.children.length > 100) {
+                panel.removeChild(panel.firstChild);
             }
         }
         
         function clearDebug() {
-            document.getElementById('debugPanel').innerHTML = '';
-            addDebugLine('Console cleared', 'info');
+            document.getElementById('debugPanel').innerHTML = '<div class="debug-info">[System] Console cleared</div>';
         }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // Event listeners
-        document.getElementById('messageContent').addEventListener('input', function() {
-            document.getElementById('charCount').innerText = this.value.length;
-        });
-        
-        document.getElementById('phoneNumbers').addEventListener('input', function() {
-            let numbers = this.value.split(/[\n,\s]+/).filter(n => n.trim());
-            document.getElementById('numberCount').innerText = numbers.length;
-            updateTotalMessages();
-        });
-        
-        document.getElementById('messagesPerNumber').addEventListener('input', updateTotalMessages);
     </script>
 </body>
 </html>

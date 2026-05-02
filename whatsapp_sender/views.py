@@ -1,3 +1,4 @@
+# core/views.py
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -17,14 +18,7 @@ def get_handler():
     with lock:
         if whatsapp_handler is None:
             whatsapp_handler = WhatsAppHandler()
-            
-            def init_worker():
-                whatsapp_handler.init_driver()
-            
-            thread = threading.Thread(target=init_worker)
-            thread.daemon = True
-            thread.start()
-            
+            whatsapp_handler.init_driver()
         return whatsapp_handler
 
 def index(request):
@@ -32,42 +26,12 @@ def index(request):
 
 @csrf_exempt
 def check_connection(request):
-    """Check WhatsApp connection status"""
     handler = get_handler()
-    
-    is_connected = False
-    qr_code = None
-    
-    if handler.driver:
-        is_connected = handler.check_ready()
-        if not is_connected:
-            qr_code = handler.get_qr_code()
-    
     return JsonResponse({
-        'connected': is_connected,
-        'qr_code': qr_code
+        'connected': True,
+        'message': 'WhatsApp Business API Ready',
+        'qr_code': None
     })
-
-@csrf_exempt
-def reconnect(request):
-    """Restart WhatsApp connection"""
-    global whatsapp_handler
-    
-    if whatsapp_handler:
-        whatsapp_handler.close()
-        time.sleep(2)
-    
-    whatsapp_handler = None
-    get_handler()
-    
-    return JsonResponse({'success': True, 'message': 'Reconnecting...'})
-
-@csrf_exempt
-def get_status(request):
-    """Get quick status without QR"""
-    handler = get_handler()
-    is_connected = handler.check_ready() if handler.driver else False
-    return JsonResponse({'connected': is_connected})
 
 @csrf_exempt
 def generate_message(request):
@@ -75,19 +39,21 @@ def generate_message(request):
         data = json.loads(request.body)
         prompt = data.get('prompt', '')
         tone = data.get('tone', 'friendly')
+        language = data.get('language', 'en')
         
         if not prompt:
             return JsonResponse({'error': 'Please enter a prompt'}, status=400)
         
-        message = ai_handler.generate_message(prompt, tone)
+        message = ai_handler.generate_message(prompt, tone, language)
         
         return JsonResponse({
             'success': True,
             'message': message
         })
     except Exception as e:
+        print(f"Error: {str(e)}")
         return JsonResponse({'error': str(e)}, status=500)
-
+    
 @csrf_exempt
 def send_messages(request):
     try:
@@ -106,10 +72,10 @@ def send_messages(request):
         # Clean numbers
         clean_numbers = []
         for num in numbers:
-            clean_num = re.sub(r'[^\d+]', '', num)
+            clean_num = re.sub(r'[^\d]', '', num)
             if clean_num:
-                if not clean_num.startswith('+'):
-                    clean_num = '+' + clean_num
+                if not clean_num.startswith('92'):
+                    clean_num = '92' + clean_num.lstrip('0')
                 clean_numbers.append(clean_num)
         
         if not clean_numbers:
@@ -117,36 +83,26 @@ def send_messages(request):
         
         handler = get_handler()
         
-        # Check connection
-        print("🔍 Checking WhatsApp connection...")
-        for i in range(15):
-            if handler.check_ready():
-                print("✅ WhatsApp is connected!")
-                break
-            print(f"⏳ Waiting... ({i+1}/15)")
-            time.sleep(2)
+        # Check rate limit
+        rate_limit = 3  # seconds between messages
         
-        if not handler.check_ready():
-            return JsonResponse({
-                'error': 'WhatsApp not connected. Please scan QR code.'
-            }, status=400)
-        
-        # Send messages
         results = []
         total_sent = 0
-        failed_numbers = []
+        total_failed = 0
+        total_attempts = len(clean_numbers) * messages_per_number
         
-        for idx, number in enumerate(clean_numbers[:20], 1):
-            print(f"\n📱 Processing number {idx}/{len(clean_numbers[:20])}: {number}")
-            
-            for msg_num in range(messages_per_number):
-                print(f"  📤 Sending message {msg_num+1}/{messages_per_number}...")
+        for number in clean_numbers:
+            for i in range(messages_per_number):
+                if messages_per_number > 1:
+                    final_msg = f"[{i+1}/{messages_per_number}] {message}"
+                else:
+                    final_msg = message
                 
-                result = handler.send_message(number, message, msg_num+1, messages_per_number)
+                result = handler.send_message(number, final_msg)
                 
                 results.append({
                     'number': number,
-                    'message_num': msg_num+1,
+                    'message_num': i+1,
                     'success': result['success'],
                     'error': result.get('error', '')
                 })
@@ -154,16 +110,9 @@ def send_messages(request):
                 if result['success']:
                     total_sent += 1
                 else:
-                    if number not in failed_numbers:
-                        failed_numbers.append(number)
+                    total_failed += 1
                 
-                # Delay between messages to same number
-                if msg_num < messages_per_number - 1:
-                    time.sleep(4)  # 4 seconds between messages to same number
-            
-            # Delay between different numbers
-            if idx < len(clean_numbers[:20]):
-                time.sleep(5)  # 5 seconds between different numbers
+                time.sleep(rate_limit)
         
         return JsonResponse({
             'success': True,
@@ -171,19 +120,16 @@ def send_messages(request):
             'summary': {
                 'total_numbers': len(clean_numbers),
                 'messages_per_number': messages_per_number,
-                'total_attempts': len(clean_numbers) * messages_per_number,
+                'total_attempts': total_attempts,
                 'successful': total_sent,
-                'failed': (len(clean_numbers) * messages_per_number) - total_sent,
-                'failed_numbers': failed_numbers
+                'failed': total_failed,
+                'success_rate': f"{(total_sent/total_attempts*100):.1f}%" if total_attempts > 0 else "0%"
             }
         })
         
     except Exception as e:
-        print(f"❌ Error: {str(e)}")
-        import traceback
-        traceback.print_exc()
         return JsonResponse({'error': str(e)}, status=500)
-        
+
 @csrf_exempt
 def check_numbers(request):
     try:
@@ -193,12 +139,16 @@ def check_numbers(request):
         numbers = re.split(r'[\n,\s]+', numbers_raw)
         numbers = [n.strip() for n in numbers if n.strip()]
         
+        # Format check only - API will validate during send
         results = []
-        for num in numbers[:20]:
+        for num in numbers[:50]:
+            clean_num = re.sub(r'[^\d]', '', num)
+            is_valid = len(clean_num) >= 10 and len(clean_num) <= 15
+            
             results.append({
                 'number': num,
-                'has_whatsapp': True,
-                'status': '✅ Ready'
+                'has_whatsapp': is_valid,
+                'status': '✅ Number format valid' if is_valid else '❌ Invalid number format'
             })
         
         return JsonResponse({'success': True, 'results': results})
@@ -210,3 +160,18 @@ def check_numbers(request):
 def get_debug(request):
     handler = get_handler()
     return JsonResponse({'logs': handler.get_debug_logs()})
+
+@csrf_exempt
+def create_template(request):
+    """Create message template for marketing (requires approval)"""
+    try:
+        data = json.loads(request.body)
+        name = data.get('name', '')
+        body = data.get('body', '')
+        
+        handler = get_handler()
+        result = handler.create_template(name, body)
+        
+        return JsonResponse(result)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

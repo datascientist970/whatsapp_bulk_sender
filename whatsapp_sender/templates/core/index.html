@@ -21,7 +21,6 @@
             --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
             --shadow-md: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
             --shadow-lg: 0 1px 3px 0 rgba(60,64,67,0.3), 0 8px 16px 6px rgba(60,64,67,0.15);
-            --shadow-xl: 0 1px 3px 0 rgba(60,64,67,0.3), 0 16px 24px 8px rgba(60,64,67,0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,7 +34,6 @@
             overflow-x: hidden;
         }
 
-        /* Animated Gradient Background */
         body::before {
             content: '';
             position: fixed;
@@ -57,11 +55,16 @@
 
         .container { position: relative; z-index: 1; }
 
-        /* Google-Inspired Header */
+        /* Header Styles */
         .nexa-header {
             text-align: center;
             margin-bottom: 48px;
             animation: fadeInDown 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .nexa-logo {
@@ -115,7 +118,7 @@
             font-size: 12px;
         }
 
-        /* Modern Card Design */
+        /* Card Styles */
         .nexa-card {
             background: rgba(255,255,255,0.96);
             backdrop-filter: blur(10px);
@@ -154,7 +157,7 @@
             font-size: 16px;
         }
 
-        /* Google Material Buttons */
+        /* Button Styles */
         .nexa-btn-primary {
             background: #1A73E8;
             color: white;
@@ -187,6 +190,21 @@
         .nexa-btn-secondary:hover {
             background: #F8F9FA;
             border-color: #1A73E8;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger-custom {
+            background: #EA4335;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-danger-custom:hover {
+            background: #D33426;
             transform: translateY(-1px);
         }
 
@@ -231,7 +249,7 @@
             color: transparent;
         }
 
-        /* Form Elements - Material Design */
+        /* Form Elements */
         .nexa-input, .nexa-textarea, .nexa-select {
             border: 1.5px solid #DADCE0;
             border-radius: 16px;
@@ -248,7 +266,7 @@
             box-shadow: 0 0 0 3px rgba(26,115,232,0.2);
         }
 
-        /* Results Animation */
+        /* Results */
         .result-item {
             animation: slideIn 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             padding: 16px;
@@ -261,12 +279,47 @@
             transform: translateX(6px);
         }
 
+        .result-success {
+            background: #E6F4EA;
+            border-left: 4px solid #34A853;
+        }
+
+        .result-failed {
+            background: #FCE8E6;
+            border-left: 4px solid #EA4335;
+        }
+
+        .result-partial {
+            background: #FEF7E0;
+            border-left: 4px solid #FBBC05;
+        }
+
         @keyframes slideIn {
             from { opacity: 0; transform: translateX(-20px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
-        /* Debug Console - Dark Mode */
+        /* Summary Box */
+        .summary-box {
+            background: linear-gradient(135deg, #1A73E8, #34A853);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Debug Console */
         .nexa-console {
             background: #1E1E1E;
             border-radius: 20px;
@@ -292,7 +345,7 @@
         .console-warning { color: #FBBC05; border-left-color: #FBBC05; }
         .console-info { color: #1A73E8; border-left-color: #1A73E8; }
 
-        /* Loading Animation */
+        /* Loading Spinner */
         .loading-spinner {
             width: 48px;
             height: 48px;
@@ -318,6 +371,18 @@
             border-radius: 10px;
             width: 0%;
             transition: width 0.3s;
+        }
+
+        /* Switch Toggle */
+        .form-switch .form-check-input {
+            width: 50px;
+            height: 25px;
+            cursor: pointer;
+        }
+
+        .form-switch .form-check-input:checked {
+            background-color: #1A73E8;
+            border-color: #1A73E8;
         }
 
         /* Responsive */
@@ -491,6 +556,47 @@
                     </div>
                 </div>
 
+                <!-- Scheduling Section (NEW) -->
+                <div class="nexa-card">
+                    <div class="nexa-card-title">
+                        <i class="bi bi-clock-history"></i>
+                        <span>⏰ Schedule Campaign</span>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="scheduleToggle" style="width: 50px; height: 25px;">
+                        <label class="form-check-label ms-2 fw-semibold" for="scheduleToggle">
+                            Enable Scheduled Sending
+                        </label>
+                    </div>
+                    
+                    <div id="scheduleSettings" style="display: none;">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Interval Value</label>
+                                <input type="number" id="intervalValue" class="nexa-input" value="4" min="1" max="168">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Interval Type</label>
+                                <select id="intervalType" class="nexa-select">
+                                    <option value="seconds">⏱️ Seconds</option>
+                                    <option value="minutes">⏰ Minutes</option>
+                                    <option value="hours" selected>🕐 Hours</option>
+                                    <option value="days">📅 Days</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Total Runs</label>
+                                <input type="number" id="totalRuns" class="nexa-input" value="10" min="1" max="1000">
+                            </div>
+                        </div>
+                        <div class="alert alert-info mt-3 small">
+                            <i class="bi bi-info-circle"></i>
+                            Example: Every <strong id="exampleText">4 hours</strong> for <strong id="runsText">10 times</strong> = Total <strong id="totalMsgText">0</strong> messages
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Recipients -->
                 <div class="nexa-card">
                     <div class="nexa-card-title">
@@ -515,6 +621,9 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Campaign Status (for scheduled tasks) -->
+                <div id="campaignStatus"></div>
 
                 <!-- Results Panel -->
                 <div class="nexa-card">
@@ -545,6 +654,7 @@
                     <div id="debugPanel" class="nexa-console">
                         <div class="console-line console-info">[INIT] NexaSend v2.0</div>
                         <div class="console-line console-info">[INIT] WhatsApp Business API • Production Ready</div>
+                        <div class="console-line console-info">[INIT] AI Neural Engine • Groq Active</div>
                         <div class="console-line console-success">[READY] System online • Waiting for campaign</div>
                     </div>
                 </div>
@@ -577,8 +687,18 @@
                             <li>Send to any number (saved/unsaved)</li>
                             <li>Best engagement: 10 AM - 6 PM</li>
                             <li>AI messages boost response by 48%</li>
+                            <li>Use scheduling for automated campaigns</li>
                         </ul>
                     </div>
+                </div>
+
+                <!-- Active Tasks -->
+                <div class="nexa-card" id="activeTasksCard" style="display: none;">
+                    <div class="nexa-card-title">
+                        <i class="bi bi-list-check"></i>
+                        <span>Active Campaigns</span>
+                    </div>
+                    <div id="activeTasksList"></div>
                 </div>
             </div>
         </div>
@@ -587,28 +707,70 @@
     <script>
         let checkInterval = null;
         let currentStats = { sent: 0, numbers: 0, successRate: 0 };
+        let scheduleEnabled = false;
+        let currentTaskId = null;
+        let taskStatusInterval = null;
+        let activeTasks = {};
 
+        // Initialize on load
         window.onload = function() {
             checkStatus();
             checkInterval = setInterval(checkStatus, 15000);
             
+            // Character counter
             document.getElementById('messageContent').addEventListener('input', function() {
                 document.getElementById('charCount').innerText = this.value.length;
             });
             
+            // Number counter
             document.getElementById('phoneNumbers').addEventListener('input', function() {
                 let nums = this.value.split(/[\n,\s]+/).filter(n => n.trim());
                 document.getElementById('numberCount').innerText = nums.length;
+                updateScheduleExample();
             });
+            
+            // Scheduling listeners
+            document.getElementById('scheduleToggle').addEventListener('change', function() {
+                scheduleEnabled = this.checked;
+                document.getElementById('scheduleSettings').style.display = scheduleEnabled ? 'block' : 'none';
+                updateScheduleExample();
+            });
+            
+            document.getElementById('intervalValue').addEventListener('input', updateScheduleExample);
+            document.getElementById('intervalType').addEventListener('change', updateScheduleExample);
+            document.getElementById('totalRuns').addEventListener('input', updateScheduleExample);
+            document.getElementById('messagesPerNumber').addEventListener('input', updateScheduleExample);
+            
+            updateScheduleExample();
         };
+
+        function updateScheduleExample() {
+            const intervalVal = document.getElementById('intervalValue').value;
+            const intervalType = document.getElementById('intervalType').value;
+            const totalRuns = document.getElementById('totalRuns').value;
+            const numbers = document.getElementById('phoneNumbers').value;
+            const msgPerNum = parseInt(document.getElementById('messagesPerNumber').value) || 1;
+            const numList = numbers.split(/[\n,\s]+/).filter(n => n.trim());
+            const totalPerRun = numList.length * msgPerNum;
+            const totalMessages = totalPerRun * totalRuns;
+            
+            document.getElementById('exampleText').innerText = `${intervalVal} ${intervalType}`;
+            document.getElementById('runsText').innerText = `${totalRuns} times`;
+            document.getElementById('totalMsgText').innerHTML = `<strong>${totalMessages}</strong> messages`;
+        }
 
         async function checkStatus() {
             try {
                 const response = await fetch('/api/check-connection/');
                 const data = await response.json();
-                addDebug('API connection verified • Production ready', 'success');
+                
+                if (data.connected) {
+                    addDebug('WhatsApp Business API: Connected & Ready', 'success');
+                } else {
+                    addDebug('API connection issue: ' + (data.message || 'Unknown'), 'warning');
+                }
             } catch(e) {
-                addDebug('Connection check failed: ' + e.message, 'error');
+                addDebug('Status check failed: ' + e.message, 'error');
             }
         }
 
@@ -622,7 +784,7 @@
                 return;
             }
             
-            addDebug(`AI generating ${tone} message in ${language}...`, 'info');
+            addDebug(`🤖 AI generating ${tone} message in ${language}...`, 'info');
             
             try {
                 const response = await fetch('/api/generate-message/', {
@@ -635,7 +797,7 @@
                 if (data.success) {
                     document.getElementById('generatedMsg').value = data.message;
                     document.getElementById('aiResult').style.display = 'block';
-                    addDebug('AI message generated successfully', 'success');
+                    addDebug('✅ AI message generated successfully', 'success');
                 } else {
                     throw new Error(data.error);
                 }
@@ -663,7 +825,7 @@
             document.getElementById('messageContent').value = msg;
             document.getElementById('charCount').innerText = msg.length;
             document.getElementById('aiResult').style.display = 'none';
-            addDebug('AI message applied to composer', 'success');
+            addDebug('📝 AI message applied to composer', 'success');
         }
 
         function clearMessage() {
@@ -677,18 +839,20 @@
         function incrementMsg() {
             let val = parseInt(document.getElementById('messagesPerNumber').value);
             if (val < 50) document.getElementById('messagesPerNumber').value = val + 1;
+            updateScheduleExample();
         }
 
         function decrementMsg() {
             let val = parseInt(document.getElementById('messagesPerNumber').value);
             if (val > 1) document.getElementById('messagesPerNumber').value = val - 1;
+            updateScheduleExample();
         }
 
         async function checkNumbers() {
             const numbers = document.getElementById('phoneNumbers').value;
             if (!numbers.trim()) { alert('Enter phone numbers'); return; }
             
-            addDebug('Validating recipient numbers...', 'info');
+            addDebug('🔍 Validating recipient numbers...', 'info');
             
             try {
                 const response = await fetch('/api/check-numbers/', {
@@ -702,14 +866,14 @@
                 let html = '<h6 class="mb-3">📋 Validation Results</h6>';
                 data.results.forEach(r => {
                     if (r.has_whatsapp) valid++;
-                    html += `<div class="result-item ${r.has_whatsapp ? 'result-success' : 'result-failed'}" style="background: ${r.has_whatsapp ? '#E6F4EA' : '#FCE8E6'}; padding: 12px; border-radius: 16px; margin-bottom: 8px;">
+                    html += `<div class="result-item ${r.has_whatsapp ? 'result-success' : 'result-failed'}" style="padding: 12px; border-radius: 16px; margin-bottom: 8px;">
                                 <strong>${r.has_whatsapp ? '✅' : '❌'} ${r.number}</strong>
                                 <div class="small">${r.status}</div>
                             </div>`;
                 });
                 html += `<div class="mt-3 pt-2 border-top"><strong>${valid}/${data.results.length}</strong> numbers ready</div>`;
                 document.getElementById('resultsArea').innerHTML = html;
-                addDebug(`Validation complete: ${valid}/${data.results.length} valid`, 'success');
+                addDebug(`✅ Validation complete: ${valid}/${data.results.length} valid`, 'success');
             } catch(e) {
                 addDebug('Validation error: ' + e.message, 'error');
             }
@@ -725,73 +889,252 @@
             if (!message.trim()) { alert('Enter a message'); return; }
             
             const numList = numbers.split(/[\n,\s]+/).filter(n => n.trim());
-            const totalMessages = numList.length * messagesPerNumber;
+            const totalPerRun = numList.length * messagesPerNumber;
             
-            if (!confirm(`🚀 Campaign Summary\n\nRecipients: ${numList.length}\nMessages/Recipient: ${messagesPerNumber}\nTotal Messages: ${totalMessages}\nRate Limit: ${rateLimit}s\n\nProceed?`)) return;
+            // Get scheduling parameters
+            const scheduleEnabled = document.getElementById('scheduleToggle').checked;
+            const intervalValue = parseInt(document.getElementById('intervalValue').value);
+            const intervalType = document.getElementById('intervalType').value;
+            const totalRuns = parseInt(document.getElementById('totalRuns').value);
+            
+            let confirmMsg = `📊 Campaign Summary\n\n`;
+            confirmMsg += `• Recipients: ${numList.length}\n`;
+            confirmMsg += `• Messages per recipient: ${messagesPerNumber}\n`;
+            confirmMsg += `• Total per run: ${totalPerRun}\n`;
+            
+            if (scheduleEnabled && totalRuns > 1) {
+                confirmMsg += `\n⏰ SCHEDULED CAMPAIGN:\n`;
+                confirmMsg += `• Every: ${intervalValue} ${intervalType}\n`;
+                confirmMsg += `• Total runs: ${totalRuns}\n`;
+                confirmMsg += `• Total messages: ${totalPerRun * totalRuns}\n`;
+                confirmMsg += `• Campaign duration: ${intervalValue * totalRuns} ${intervalType}\n`;
+            } else {
+                confirmMsg += `\n• Send once: Immediately\n`;
+            }
+            
+            if (!confirm(confirmMsg + `\n\nProceed?`)) return;
             
             const resultsArea = document.getElementById('resultsArea');
-            resultsArea.innerHTML = `<div class="text-center py-4"><div class="loading-spinner mx-auto"></div><p class="mt-3">Sending ${totalMessages} messages...</p><div class="progress-bar-custom mt-3"><div class="progress-fill" id="progressBar"></div></div></div>`;
+            resultsArea.innerHTML = `<div class="text-center py-4"><div class="loading-spinner mx-auto"></div><p class="mt-3">${scheduleEnabled ? '⏰ Scheduling campaign...' : '📨 Sending messages...'}</p><div class="progress-bar-custom mt-3"><div class="progress-fill" id="progressBar"></div></div></div>`;
             
-            addDebug(`🚀 Launching campaign: ${numList.length} recipients × ${messagesPerNumber} messages`, 'info');
+            addDebug(`🚀 ${scheduleEnabled ? 'Scheduling' : 'Starting'} campaign: ${numList.length} recipients × ${messagesPerNumber} messages`, 'info');
+            
+            if (scheduleEnabled) {
+                addDebug(`⏰ Schedule: Every ${intervalValue} ${intervalType} for ${totalRuns} times`, 'info');
+            }
             
             try {
-                const startTime = Date.now();
                 const response = await fetch('/api/send-messages/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ numbers, message, messages_per_number: messagesPerNumber, rate_limit: rateLimit })
+                    body: JSON.stringify({
+                        numbers, 
+                        message, 
+                        messages_per_number: messagesPerNumber,
+                        rate_limit: rateLimit,
+                        schedule_enabled: scheduleEnabled,
+                        interval_value: intervalValue,
+                        interval_type: intervalType,
+                        total_runs: totalRuns
+                    })
                 });
                 
-                if (!response.ok) throw new Error('Send failed');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Send failed');
+                }
+                
                 const data = await response.json();
-                const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
                 
                 if (data.success) {
-                    currentStats = {
-                        sent: data.summary.successful,
-                        numbers: data.summary.total_numbers,
-                        successRate: data.summary.success_rate
-                    };
-                    document.getElementById('statSuccess').innerText = currentStats.sent;
-                    document.getElementById('statNumbers').innerText = currentStats.numbers;
-                    document.getElementById('statRate').innerText = currentStats.successRate;
-                    
-                    let html = `<div class="summary-box p-4 rounded-4 mb-4" style="background: linear-gradient(135deg, #1A73E8, #34A853); color: white;">
-                                    <h5 class="mb-3">✅ Campaign Complete</h5>
-                                    <div class="row">
-                                        <div class="col-6"><small>Time</small><br><strong>${elapsed}s</strong></div>
-                                        <div class="col-6"><small>Rate</small><br><strong>${data.summary.success_rate}</strong></div>
-                                        <div class="col-6 mt-2"><small>Sent</small><br><strong class="fs-3">${data.summary.successful}</strong></div>
-                                        <div class="col-6 mt-2"><small>Failed</small><br><strong class="fs-3 text-warning">${data.summary.failed}</strong></div>
-                                    </div>
-                                </div>`;
-                    
-                    html += '<h6 class="mb-3">📋 Delivery Report</h6>';
-                    const grouped = {};
-                    data.results.forEach(r => { if (!grouped[r.number]) grouped[r.number] = []; grouped[r.number].push(r); });
-                    
-                    Object.keys(grouped).forEach(num => {
-                        const msgs = grouped[num];
-                        const successCount = msgs.filter(m => m.success).length;
-                        const totalCount = msgs.length;
-                        let status = '✅';
-                        let bg = '#E6F4EA';
-                        if (successCount === 0) { status = '❌'; bg = '#FCE8E6'; }
-                        else if (successCount < totalCount) { status = '⚠️'; bg = '#FEF7E0'; }
+                    if (data.scheduled) {
+                        currentTaskId = data.summary.task_id;
+                        activeTasks[currentTaskId] = {
+                            id: currentTaskId,
+                            interval: data.summary.interval,
+                            total_runs: data.summary.total_runs,
+                            status: 'active'
+                        };
                         
-                        html += `<div style="background: ${bg}; padding: 14px; border-radius: 16px; margin-bottom: 10px;">
-                                    <strong>${status} ${num}</strong>
-                                    <span class="float-end">${successCount}/${totalCount}</span>
-                                    <div class="progress-bar-custom mt-2"><div class="progress-fill" style="width: ${(successCount/totalCount)*100}%"></div></div>
-                                </div>`;
-                    });
-                    
-                    resultsArea.innerHTML = html;
-                    addDebug(`Campaign completed! ${data.summary.successful}/${data.summary.total_attempts} delivered (${data.summary.success_rate})`, 'success');
+                        let html = `
+                            <div class="summary-box p-4 rounded-4 mb-4">
+                                <h5 class="mb-3">✅ Campaign Scheduled!</h5>
+                                <div class="row">
+                                    <div class="col-6"><small>Task ID</small><br><strong>${data.summary.task_id}</strong></div>
+                                    <div class="col-6"><small>Interval</small><br><strong>${data.summary.interval}</strong></div>
+                                    <div class="col-6 mt-2"><small>Total Runs</small><br><strong>${data.summary.total_runs}</strong></div>
+                                    <div class="col-6 mt-2"><small>Total Messages</small><br><strong>${data.summary.total_messages}</strong></div>
+                                </div>
+                            </div>
+                            <div class="alert alert-info">
+                                <i class="bi bi-clock-history"></i>
+                                <strong>Campaign Active!</strong><br>
+                                Messages will be sent every ${intervalValue} ${intervalType} for ${totalRuns} times.<br>
+                                <small>Task ID: ${data.summary.task_id}</small>
+                            </div>
+                            <button class="btn btn-danger-custom mt-3" onclick="cancelCampaign('${data.summary.task_id}')">
+                                <i class="bi bi-x-circle"></i> Cancel Campaign
+                            </button>
+                        `;
+                        
+                        resultsArea.innerHTML = html;
+                        addDebug(`✅ Campaign scheduled! Task ID: ${data.summary.task_id}`, 'success');
+                        updateActiveTasksDisplay();
+                        
+                        // Start tracking task status
+                        if (taskStatusInterval) clearInterval(taskStatusInterval);
+                        taskStatusInterval = setInterval(() => checkTaskStatus(data.summary.task_id), 5000);
+                        
+                    } else {
+                        // Immediate send results
+                        currentStats.sent = data.summary.successful;
+                        currentStats.numbers = data.summary.total_numbers;
+                        currentStats.successRate = data.summary.success_rate;
+                        
+                        document.getElementById('statSuccess').innerText = currentStats.sent;
+                        document.getElementById('statNumbers').innerText = currentStats.numbers;
+                        document.getElementById('statRate').innerText = currentStats.successRate;
+                        
+                        let html = `
+                            <div class="summary-box p-4 rounded-4 mb-4">
+                                <h5 class="mb-3">✅ Campaign Complete!</h5>
+                                <div class="row">
+                                    <div class="col-6"><small>Recipients</small><br><strong>${data.summary.total_numbers}</strong></div>
+                                    <div class="col-6"><small>Success Rate</small><br><strong>${data.summary.success_rate}</strong></div>
+                                    <div class="col-6 mt-2"><small>Sent</small><br><strong class="fs-3">${data.summary.successful}</strong></div>
+                                    <div class="col-6 mt-2"><small>Failed</small><br><strong class="fs-3 text-warning">${data.summary.failed}</strong></div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        html += '<h6 class="mb-3">📋 Delivery Report</h6>';
+                        const grouped = {};
+                        data.results.forEach(r => {
+                            if (!grouped[r.number]) grouped[r.number] = [];
+                            grouped[r.number].push(r);
+                        });
+                        
+                        Object.keys(grouped).forEach(num => {
+                            const msgs = grouped[num];
+                            const successCount = msgs.filter(m => m.success).length;
+                            const totalCount = msgs.length;
+                            let cls = 'result-success';
+                            let icon = '✅';
+                            if (successCount === 0) { cls = 'result-failed'; icon = '❌'; }
+                            else if (successCount < totalCount) { cls = 'result-partial'; icon = '⚠️'; }
+                            
+                            html += `<div class="${cls} result-item">
+                                        <strong>${icon} ${num}</strong>
+                                        <span class="float-end">${successCount}/${totalCount}</span>
+                                        <div class="progress-bar-custom mt-2"><div class="progress-fill" style="width: ${(successCount/totalCount)*100}%"></div></div>
+                                    </div>`;
+                        });
+                        
+                        resultsArea.innerHTML = html;
+                        addDebug(`✅ Campaign completed! ${data.summary.successful}/${data.summary.total_attempts} delivered (${data.summary.success_rate})`, 'success');
+                    }
+                } else {
+                    throw new Error('Send operation failed');
                 }
             } catch(e) {
                 resultsArea.innerHTML = `<div class="alert alert-danger rounded-4">❌ Error: ${e.message}</div>`;
                 addDebug('Campaign failed: ' + e.message, 'error');
+            }
+        }
+
+        async function checkTaskStatus(taskId) {
+            try {
+                const response = await fetch('/api/task-status/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ task_id: taskId })
+                });
+                const data = await response.json();
+                
+                if (data.success && data.task) {
+                    const statusDiv = document.getElementById('campaignStatus');
+                    if (statusDiv) {
+                        if (data.task.status === 'active') {
+                            statusDiv.innerHTML = `
+                                <div class="nexa-card mb-3">
+                                    <div class="small">
+                                        <strong>📊 Campaign Status</strong><br>
+                                        Progress: ${data.task.completed_runs}/${data.task.total_runs} runs completed<br>
+                                        Status: 🟢 Active<br>
+                                        Next run: ${new Date(data.task.next_run).toLocaleString()}
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            statusDiv.innerHTML = '';
+                            if (data.task.status === 'completed') {
+                                addDebug('Campaign completed successfully!', 'success');
+                                if (taskStatusInterval) clearInterval(taskStatusInterval);
+                                updateActiveTasksDisplay();
+                            }
+                        }
+                    }
+                    
+                    if (data.task.status === 'completed') {
+                        if (taskStatusInterval) clearInterval(taskStatusInterval);
+                        updateActiveTasksDisplay();
+                    }
+                }
+            } catch(e) {
+                console.error('Status check error:', e);
+            }
+        }
+
+        async function cancelCampaign(taskId) {
+            if (!confirm('Are you sure you want to cancel this campaign?')) return;
+            
+            try {
+                const response = await fetch('/api/cancel-task/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ task_id: taskId })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    addDebug(`Campaign ${taskId} cancelled`, 'warning');
+                    document.getElementById('campaignStatus').innerHTML = '';
+                    document.getElementById('resultsArea').innerHTML = `
+                        <div class="alert alert-warning rounded-4">
+                            <i class="bi bi-exclamation-triangle"></i> Campaign cancelled by user.
+                        </div>
+                    `;
+                    updateActiveTasksDisplay();
+                    if (taskStatusInterval) clearInterval(taskStatusInterval);
+                }
+            } catch(e) {
+                addDebug('Cancel failed: ' + e.message, 'error');
+            }
+        }
+
+        function updateActiveTasksDisplay() {
+            const card = document.getElementById('activeTasksCard');
+            const list = document.getElementById('activeTasksList');
+            
+            if (Object.keys(activeTasks).length > 0) {
+                card.style.display = 'block';
+                let html = '';
+                Object.values(activeTasks).forEach(task => {
+                    html += `
+                        <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+                            <div>
+                                <small><strong>${task.id}</strong></small><br>
+                                <small class="text-muted">Every ${task.interval}</small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="cancelCampaign('${task.id}')">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html;
+            } else {
+                card.style.display = 'none';
             }
         }
 

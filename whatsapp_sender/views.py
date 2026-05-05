@@ -1,4 +1,4 @@
-# core/views.py
+# core/views.py - Complete with scheduling
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -6,19 +6,148 @@ import json
 import threading
 import time
 import re
+from datetime import datetime, timedelta
 from .whatsapp_handler import WhatsAppHandler
 from .ai_handler import AIHandler
+import queue
+import uuid
 
+# Global instances
 whatsapp_handler = None
 ai_handler = AIHandler()
 lock = threading.Lock()
+scheduled_tasks = {}
+task_queue = queue.Queue()
+scheduler_thread_running = True
+
+# Message Scheduler Class
+class MessageScheduler:
+    def __init__(self):
+        self.tasks = {}
+        self.running = True
+        self.task_counter = 0
+        
+    def add_task(self, task_id, numbers, message, messages_per_number, interval_type, interval_value, total_runs):
+        """Add a scheduled task"""
+        
+        # Convert interval to seconds
+        if interval_type == 'seconds':
+            interval_seconds = interval_value
+        elif interval_type == 'minutes':
+            interval_seconds = interval_value * 60
+        elif interval_type == 'hours':
+            interval_seconds = interval_value * 3600
+        else:  # days
+            interval_seconds = interval_value * 86400
+        
+        task = {
+            'id': task_id,
+            'numbers': numbers,
+            'message': message,
+            'messages_per_number': messages_per_number,
+            'interval_seconds': interval_seconds,
+            'total_runs': total_runs,
+            'completed_runs': 0,
+            'next_run': datetime.now(),
+            'status': 'active',
+            'created_at': datetime.now(),
+            'results': []
+        }
+        
+        self.tasks[task_id] = task
+        return task_id
+    
+    def get_task_status(self, task_id):
+        """Get status of a task"""
+        return self.tasks.get(task_id, None)
+    
+    def cancel_task(self, task_id):
+        """Cancel a scheduled task"""
+        if task_id in self.tasks:
+            self.tasks[task_id]['status'] = 'cancelled'
+            return True
+        return False
+    
+    def get_all_tasks(self):
+        """Get all active tasks"""
+        return {k: v for k, v in self.tasks.items() if v['status'] == 'active'}
+    
+    def run(self):
+        """Run the scheduler"""
+        global whatsapp_handler
+        
+        while self.running:
+            now = datetime.now()
+            
+            for task_id, task in list(self.tasks.items()):
+                if task['status'] != 'active':
+                    continue
+                
+                if now >= task['next_run']:
+                    if task['completed_runs'] >= task['total_runs']:
+                        task['status'] = 'completed'
+                        continue
+                    
+                    # Send messages
+                    print(f"📨 Executing task {task_id} - Run {task['completed_runs'] + 1}/{task['total_runs']}")
+                    
+                    if not whatsapp_handler or not whatsapp_handler.check_ready():
+                        whatsapp_handler = get_handler()
+                    
+                    results = []
+                    successful = 0
+                    
+                    for number in task['numbers']:
+                        for i in range(task['messages_per_number']):
+                            if task['messages_per_number'] > 1:
+                                final_msg = f"[{i+1}/{task['messages_per_number']}] {task['message']}"
+                            else:
+                                final_msg = task['message']
+                            
+                            result = whatsapp_handler.send_message(number, final_msg)
+                            results.append(result)
+                            if result['success']:
+                                successful += 1
+                            time.sleep(2)  # Rate limit
+                    
+                    task['completed_runs'] += 1
+                    task['next_run'] = now + timedelta(seconds=task['interval_seconds'])
+                    task['results'].append({
+                        'run_time': now.isoformat(),
+                        'successful': successful,
+                        'total': len(task['numbers']) * task['messages_per_number'],
+                        'results': results
+                    })
+                    
+                    print(f"✅ Task {task_id} completed run {task['completed_runs']}/{task['total_runs']}")
+            
+            time.sleep(1)  # Check every second
+
+
+# Initialize scheduler
+scheduler = MessageScheduler()
+
+def start_scheduler():
+    """Start the scheduler thread"""
+    def run_scheduler():
+        scheduler.run()
+    
+    thread = threading.Thread(target=run_scheduler, daemon=True)
+    thread.start()
+
+# Start scheduler when app loads
+start_scheduler()
 
 def get_handler():
     global whatsapp_handler
     with lock:
         if whatsapp_handler is None:
             whatsapp_handler = WhatsAppHandler()
-            whatsapp_handler.init_driver()
+            def init():
+                whatsapp_handler.init_driver()
+            thread = threading.Thread(target=init)
+            thread.daemon = True
+            thread.start()
         return whatsapp_handler
 
 def index(request):
@@ -27,11 +156,8 @@ def index(request):
 @csrf_exempt
 def check_connection(request):
     handler = get_handler()
-    return JsonResponse({
-        'connected': True,
-        'message': 'WhatsApp Business API Ready',
-        'qr_code': None
-    })
+    is_connected = handler.check_ready() if handler.driver else True  # API always ready
+    return JsonResponse({'connected': is_connected})
 
 @csrf_exempt
 def generate_message(request):
@@ -51,9 +177,8 @@ def generate_message(request):
             'message': message
         })
     except Exception as e:
-        print(f"Error: {str(e)}")
         return JsonResponse({'error': str(e)}, status=500)
-    
+
 @csrf_exempt
 def send_messages(request):
     try:
@@ -62,8 +187,11 @@ def send_messages(request):
         message = data.get('message', '')
         messages_per_number = int(data.get('messages_per_number', 1))
         
-        if not message:
-            return JsonResponse({'error': 'Message is required'}, status=400)
+        # Scheduling parameters
+        schedule_enabled = data.get('schedule_enabled', False)
+        interval_value = int(data.get('interval_value', 1))
+        interval_type = data.get('interval_type', 'hours')
+        total_runs = int(data.get('total_runs', 1))
         
         # Parse numbers
         numbers = re.split(r'[\n,\s]+', numbers_raw)
@@ -83,9 +211,40 @@ def send_messages(request):
         
         handler = get_handler()
         
-        # Check rate limit
-        rate_limit = 3  # seconds between messages
+        # If scheduling is enabled
+        if schedule_enabled and total_runs > 1:
+            task_id = str(uuid.uuid4())[:8]
+            
+            task_id = scheduler.add_task(
+                task_id=task_id,
+                numbers=clean_numbers,
+                message=message,
+                messages_per_number=messages_per_number,
+                interval_type=interval_type,
+                interval_value=interval_value,
+                total_runs=total_runs
+            )
+            
+            # Format interval display
+            interval_display = f"{interval_value} {interval_type}"
+            
+            return JsonResponse({
+                'success': True,
+                'scheduled': True,
+                'task_id': task_id,
+                'message': f'Campaign scheduled! Will send every {interval_display} for {total_runs} times',
+                'summary': {
+                    'total_numbers': len(clean_numbers),
+                    'messages_per_number': messages_per_number,
+                    'total_per_run': len(clean_numbers) * messages_per_number,
+                    'total_messages': len(clean_numbers) * messages_per_number * total_runs,
+                    'interval': f"{interval_value} {interval_type}",
+                    'total_runs': total_runs,
+                    'task_id': task_id
+                }
+            })
         
+        # Immediate send (no scheduling)
         results = []
         total_sent = 0
         total_failed = 0
@@ -112,10 +271,11 @@ def send_messages(request):
                 else:
                     total_failed += 1
                 
-                time.sleep(rate_limit)
+                time.sleep(2)
         
         return JsonResponse({
             'success': True,
+            'scheduled': False,
             'results': results,
             'summary': {
                 'total_numbers': len(clean_numbers),
@@ -139,7 +299,6 @@ def check_numbers(request):
         numbers = re.split(r'[\n,\s]+', numbers_raw)
         numbers = [n.strip() for n in numbers if n.strip()]
         
-        # Format check only - API will validate during send
         results = []
         for num in numbers[:50]:
             clean_num = re.sub(r'[^\d]', '', num)
@@ -148,7 +307,7 @@ def check_numbers(request):
             results.append({
                 'number': num,
                 'has_whatsapp': is_valid,
-                'status': '✅ Number format valid' if is_valid else '❌ Invalid number format'
+                'status': '✅ Format valid' if is_valid else '❌ Invalid format'
             })
         
         return JsonResponse({'success': True, 'results': results})
@@ -162,16 +321,34 @@ def get_debug(request):
     return JsonResponse({'logs': handler.get_debug_logs()})
 
 @csrf_exempt
-def create_template(request):
-    """Create message template for marketing (requires approval)"""
-    try:
-        data = json.loads(request.body)
-        name = data.get('name', '')
-        body = data.get('body', '')
-        
-        handler = get_handler()
-        result = handler.create_template(name, body)
-        
-        return JsonResponse(result)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+def get_task_status(request):
+    """Get status of a scheduled task"""
+    data = json.loads(request.body)
+    task_id = data.get('task_id', '')
+    
+    task = scheduler.get_task_status(task_id)
+    if task:
+        return JsonResponse({
+            'success': True,
+            'task': {
+                'id': task['id'],
+                'status': task['status'],
+                'completed_runs': task['completed_runs'],
+                'total_runs': task['total_runs'],
+                'next_run': task['next_run'].isoformat(),
+                'created_at': task['created_at'].isoformat(),
+                'total_numbers': len(task['numbers']),
+                'messages_per_number': task['messages_per_number']
+            }
+        })
+    else:
+        return JsonResponse({'success': False, 'error': 'Task not found'})
+
+@csrf_exempt
+def cancel_task(request):
+    """Cancel a scheduled task"""
+    data = json.loads(request.body)
+    task_id = data.get('task_id', '')
+    
+    result = scheduler.cancel_task(task_id)
+    return JsonResponse({'success': result})

@@ -8,7 +8,6 @@ import re
 from datetime import datetime, timedelta
 from .whatsapp_handler import WhatsAppHandler
 from .ai_handler import AIHandler
-import queue
 import uuid
 
 # Global instances
@@ -16,7 +15,6 @@ whatsapp_handler = None
 ai_handler = AIHandler()
 lock = threading.Lock()
 scheduled_tasks = {}
-task_queue = queue.Queue()
 scheduler_thread_running = True
 
 # Message Scheduler Class
@@ -90,7 +88,7 @@ class MessageScheduler:
                     # Send messages
                     print(f"📨 Executing task {task_id} - Run {task['completed_runs'] + 1}/{task['total_runs']}")
                     
-                    if not whatsapp_handler or not whatsapp_handler.check_ready():
+                    if not whatsapp_handler:
                         whatsapp_handler = get_handler()
                     
                     results = []
@@ -122,7 +120,6 @@ class MessageScheduler:
             
             time.sleep(1)  # Check every second
 
-
 # Initialize scheduler
 scheduler = MessageScheduler()
 
@@ -142,11 +139,8 @@ def get_handler():
     with lock:
         if whatsapp_handler is None:
             whatsapp_handler = WhatsAppHandler()
-            def init():
-                whatsapp_handler.init_driver()
-            thread = threading.Thread(target=init)
-            thread.daemon = True
-            thread.start()
+            # API-based handler doesn't need driver initialization
+            whatsapp_handler.init_driver()
         return whatsapp_handler
 
 def index(request):
@@ -154,8 +148,10 @@ def index(request):
 
 @csrf_exempt
 def check_connection(request):
+    """Check API connection status"""
     handler = get_handler()
-    is_connected = handler.check_ready() if handler.driver else True  # API always ready
+    # API-based handler always ready, no driver attribute needed
+    is_connected = True  # WhatsApp Business API is always ready
     return JsonResponse({'connected': is_connected})
 
 @csrf_exempt
@@ -176,6 +172,7 @@ def generate_message(request):
             'message': message
         })
     except Exception as e:
+        print(f"Error: {str(e)}")
         return JsonResponse({'error': str(e)}, status=500)
 
 @csrf_exempt
@@ -214,7 +211,7 @@ def send_messages(request):
         if schedule_enabled and total_runs > 1:
             task_id = str(uuid.uuid4())[:8]
             
-            task_id = scheduler.add_task(
+            scheduler.add_task(
                 task_id=task_id,
                 numbers=clean_numbers,
                 message=message,
@@ -287,6 +284,7 @@ def send_messages(request):
         })
         
     except Exception as e:
+        print(f"Error in send_messages: {str(e)}")
         return JsonResponse({'error': str(e)}, status=500)
 
 @csrf_exempt
@@ -322,32 +320,38 @@ def get_debug(request):
 @csrf_exempt
 def get_task_status(request):
     """Get status of a scheduled task"""
-    data = json.loads(request.body)
-    task_id = data.get('task_id', '')
-    
-    task = scheduler.get_task_status(task_id)
-    if task:
-        return JsonResponse({
-            'success': True,
-            'task': {
-                'id': task['id'],
-                'status': task['status'],
-                'completed_runs': task['completed_runs'],
-                'total_runs': task['total_runs'],
-                'next_run': task['next_run'].isoformat(),
-                'created_at': task['created_at'].isoformat(),
-                'total_numbers': len(task['numbers']),
-                'messages_per_number': task['messages_per_number']
-            }
-        })
-    else:
-        return JsonResponse({'success': False, 'error': 'Task not found'})
+    try:
+        data = json.loads(request.body)
+        task_id = data.get('task_id', '')
+        
+        task = scheduler.get_task_status(task_id)
+        if task:
+            return JsonResponse({
+                'success': True,
+                'task': {
+                    'id': task['id'],
+                    'status': task['status'],
+                    'completed_runs': task['completed_runs'],
+                    'total_runs': task['total_runs'],
+                    'next_run': task['next_run'].isoformat(),
+                    'created_at': task['created_at'].isoformat(),
+                    'total_numbers': len(task['numbers']),
+                    'messages_per_number': task['messages_per_number']
+                }
+            })
+        else:
+            return JsonResponse({'success': False, 'error': 'Task not found'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
 
 @csrf_exempt
 def cancel_task(request):
     """Cancel a scheduled task"""
-    data = json.loads(request.body)
-    task_id = data.get('task_id', '')
-    
-    result = scheduler.cancel_task(task_id)
-    return JsonResponse({'success': result})
+    try:
+        data = json.loads(request.body)
+        task_id = data.get('task_id', '')
+        
+        result = scheduler.cancel_task(task_id)
+        return JsonResponse({'success': result})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})

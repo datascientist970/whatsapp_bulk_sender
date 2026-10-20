@@ -1,181 +1,86 @@
-# 📱 WhatsApp Business Suite - Enterprise Bulk Messaging Platform
+# WhatsApp Business Suite — Bulk Messaging Platform with AI Message Generation
 
-<div align="center">
+> A Django web application for WhatsApp bulk messaging: validate numbers, generate marketing messages with AI (Groq), and send campaigns through WhatsApp Web — with delivery tracking from a single dashboard.
 
-![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
-![Python](https://img.shields.io/badge/python-3.9+-green.svg)
-![Django](https://img.shields.io/badge/django-5.0.2-green.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/Python-3.9+-blue)
+![Django](https://img.shields.io/badge/Django-5.0.2-green)
+![Groq](https://img.shields.io/badge/AI-Groq-orange)
+![Version](https://img.shields.io/badge/Version-2.0.0-blue)
 
-**Professional WhatsApp Bulk Messaging Solution with AI-Powered Content Generation**
+## Overview
 
-[Features](#✨-features) • [Installation](#🚀-installation) • [Usage](#💻-usage) • [Troubleshooting](#🔧-troubleshooting) • [FAQ](#❓-faq)
+WhatsApp Business Suite is built for businesses that communicate with customers on WhatsApp: marketing campaigns, notifications, reminders, and announcements. It pairs a Selenium-based WhatsApp Web sending engine (`whatsapp_sender/whatsapp_handler.py`) with an AI handler (`whatsapp_sender/ai_handler.py`) powered by the Groq API, so messages can be generated in different tones instead of written one by one.
 
-</div>
+## Key Features
 
----
+- **Bulk sending** — send a message to many recipients in one campaign
+- **AI message generator** — generate professional marketing messages with the Groq API, in multiple tones
+- **Multi-send** — optionally send the same message multiple times per recipient (configurable, up to 50)
+- **Number validation** — check which numbers are on WhatsApp before sending
+- **Real-time tracking** — monitor delivery status and campaign success rates as sending progresses
+- **Secure session handling** — managed WhatsApp Web session via Selenium + webdriver-manager
 
-## 🎯 What is This?
+## Tech Stack
 
-WhatsApp Business Suite is a professional web application that allows you to:
-- Send bulk WhatsApp messages to multiple recipients
-- Generate AI-powered marketing messages using Groq API
-- Send multiple messages per recipient (1-50 times)
-- Check if phone numbers have WhatsApp
-- Track delivery status in real-time
+| Layer | Technology |
+|---|---|
+| Backend | Django 5.0.2 (Python) |
+| AI | Groq API (`groq` Python SDK) |
+| Automation | Selenium 4.18, webdriver-manager (WhatsApp Web) |
+| Config | python-dotenv (`.env` for API keys) |
+| Database | SQLite |
+| Frontend | Django templates (HTML/CSS/JavaScript) |
+| Other | requests, httpx, django-cors-headers |
 
-**Perfect for:** Marketing campaigns, customer notifications, event reminders, business announcements
+## Project Structure
 
----
+```
+├── whatsapp_bulk_sender/   # Project settings & URLs
+├── whatsapp_sender/
+│   ├── ai_handler.py        # Groq-powered AI message generation
+│   ├── whatsapp_handler.py  # Selenium WhatsApp Web sending engine
+│   ├── models.py / views.py / urls.py
+│   └── templates/core/index.html
+├── requirements.txt
+├── install.bat              # Windows one-click installer
+├── .env                     # API keys (create your own — never commit real keys)
+└── manage.py
+```
 
-## ✨ Features
+## Getting Started
 
-| Feature | Description |
-|---------|-------------|
-| 🤖 **AI Message Generator** | Create professional messages with 6 different tones |
-| 📨 **Bulk Sending** | Send to hundreds of numbers simultaneously |
-| 🔢 **Multi-Send** | Send up to 50 messages per recipient |
-| ✅ **Number Validation** | Check which numbers have WhatsApp |
-| 📊 **Real-time Analytics** | Track success rates and delivery status |
-| 🔐 **Secure Session** | Login once, stay connected |
-| 🐛 **Debug Console** | Built-in troubleshooting tools |
-| 📱 **Responsive Design** | Works on desktop, tablet, and mobile |
+```bash
+git clone https://github.com/datascientist970/whatsapp_bulk_sender.git
+cd whatsapp_bulk_sender
 
----
+python -m venv venv
+venv\Scripts\activate        # Windows — or simply run install.bat
+pip install -r requirements.txt
+```
 
-## 🚀 Installation Guide for Beginners
+Create your `.env` file with your own Groq API key:
 
-### Step 1: Prerequisites
+```
+GROQ_API_KEY=your_groq_api_key_here
+```
 
-Before starting, make sure you have:
+Then:
 
-1. **Python 3.9 or higher** 
-   - Download from: https://www.python.org/downloads/
-   - ✅ Check "Add Python to PATH" during installation
+```bash
+python manage.py migrate
+python manage.py runserver
+```
 
-2. **Google Chrome Browser**
-   - Download from: https://www.google.com/chrome/
-   - Any version works
+## Usage
 
-3. **Groq API Key** (Free)
-   - Sign up at: https://console.groq.com
-   - Go to "API Keys" → "Create API Key"
-   - Copy your key (starts with `gsk_`)
+1. Open the app in your browser and connect WhatsApp by scanning the WhatsApp Web QR code when the sender starts.
+2. Add/import recipient numbers and (optionally) validate them.
+3. Write a message yourself — or let the AI generator draft one in the tone you want.
+4. Choose the send count per recipient, start the campaign, and watch delivery status update in real time.
 
-### Step 2: Download the Project
+> Use bulk messaging responsibly and only with recipients who have opted in; unsolicited bulk messaging can get a WhatsApp number restricted.
 
-**Option A: Download ZIP**
-1. Click "Code" button → "Download ZIP"
-2. Extract to a folder (e.g., `C:\WhatsApp-Sender`)
+## Author
 
-**Option B: Clone with Git**
-
-git clone https://github.com/datascience970/whatsapp-bulk-sender.git
-cd whatsapp-bulk-sender
-
-
-Step 3: One-Click Installation
-Windows Users:
-Double-click install.bat (create this file using the code below)
-
-Wait for installation to complete
-
-Follow the on-screen instructions
-
-Mac/Linux Users:
-chmod +x install.sh
-./install.sh
-
-Launch the Application
-Open your web browser
-Go to: http://localhost:8000
-You should see the WhatsApp Business Suite interface
-
-💻 How to Use
-First Time Setup - Connect WhatsApp
-Open the application at http://localhost:8000
-
-Check the status - It will show "Disconnected"
-
-Scan QR Code:
-
-Open WhatsApp on your phone
-
-Go to Settings → Linked Devices → Link a Device
-
-Scan the QR code shown on your computer screen
-
-Wait for connection - Status will change to "Connected"
-
-https://via.placeholder.com/600x200?text=QR+Code+Scanning+Guide
-
-Sending Your First Campaign
-Step 1: Generate AI Message (Optional)
-Enter what your campaign is about:
-
-text
-Example: "Promote our summer sale with 30% discount on all products"
-Choose a tone: Professional, Casual, Friendly, Urgent, Promotional, or Humorous
-
-Click "Generate AI Message"
-
-Click "Apply to Campaign" to use it
-
-Step 2: Write or Edit Your Message
-Type your message in the "Message Content" box
-
-Emojis work great! 😊
-
-Keep messages under 1500 characters for best results
-
-Use line breaks for readability
-
-Step 3: Add Phone Numbers
-Enter numbers one per line or comma-separated:
-
-text
-+1234567890
-+9876543210
-+1122334455
-Important: Always include country code (e.g., +1 for USA, +44 for UK)
-
-Step 4: Set Delivery Options
-Choose how many messages to send per number (1-50)
-
-The app will show total messages to be sent
-
-Step 5: Validate Numbers (Recommended)
-Click "Validate Numbers" to check which numbers have WhatsApp
-
-Step 6: Send Campaign
-Click "Execute Campaign"
-
-Confirm the total messages
-
-Watch real-time delivery results
-
-Check success rate in analytics
-
-📊 Understanding the Interface
-Main Dashboard
-Connection Status: Shows if WhatsApp is connected
-
-AI Message Generator: Create professional content
-
-Message Content: Your campaign message
-
-Send Settings: Configure delivery options
-
-Recipient List: Phone numbers
-
-Campaign Analytics: Results and statistics
-
-Debug Console (Right Panel)
-Shows real-time system logs
-
-Helps troubleshoot issues
-
-Displays error messages
-
-Useful for advanced users
-
+**Muhammad Dawood** — AI & Data Science Engineer
+GitHub: https://github.com/datascientist970 · Mardan, Pakistan
